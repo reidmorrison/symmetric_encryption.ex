@@ -78,15 +78,81 @@ TODO:
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
 by adding `symmetric_encryption` to your list of dependencies in `mix.exs`:
 
-```elixir
+~~~elixir
 def deps do
   [
     {:symmetric_encryption, "~> 0.1"}
   ]
 end
-```
+~~~
 
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
 be found at [https://hexdocs.pm/symmetric_encryption](https://hexdocs.pm/symmetric_encryption).
 
+## Usage
+
+Encrypt String data.
+~~~elixir
+iex> SymmetricEncryption.encrypt("Hello World")
+"QEVuQwIAPiplaSyln4bywEKXYKDOqQ=="
+~~~
+
+Decrypt String data.
+~~~elixir
+iex> encrypted = SymmetricEncryption.encrypt("Hello World")
+"QEVuQwIAPiplaSyln4bywEKXYKDOqQ=="
+iex> SymmetricEncryption.decrypt(encrypted)
+"Hello World"
+~~~
+
+Is the string encrypted?
+~~~elixir
+iex> encrypted = SymmetricEncryption.encrypt("Hello World")
+"QEVuQwIAPiplaSyln4bywEKXYKDOqQ=="
+iex> SymmetricEncryption.encrypted?(encrypted)
+true
+iex> SymmetricEncryption.encrypted?("Hello World")
+false
+~~~
+
+Return the header for an encrypted string.
+~~~elixir
+iex> encrypted = SymmetricEncryption.encrypt("Hello World")
+"QEVuQwJAEAAPX3a7EGJ7STMqIO8g38VeB7mFO/DC6DhdYljT4AmdFw=="
+
+iex> SymmetricEncryption.header(encrypted)
+%SymmetricEncryption.Header{
+  auth_tag: nil,
+  cipher_name: nil,
+  compress: false,
+  encrypted_key: nil,
+  iv: <<15, 95, 118, 187, 16, 98, 123, 73, 51, 42, 32, 239, 32, 223, 197, 94>>,
+  version: 2
+}
+~~~
+
+Always return the same encrypted value for the same input data.
+
+The same global IV is used to generate the encrypted data, which is considered insecure since
+too much encrypted data using the same key and IV can allow hackers to reverse the key.
+
+The same encrypted value is returned every time the same data is encrypted, which is useful
+when the encrypted value is used with database lookups etc.
+
+~~~elixir
+iex> SymmetricEncryption.fixed_encrypt("Hello World")
+"QEVuQwIAPiplaSyln4bywEKXYKDOqQ=="
+iex> SymmetricEncryption.fixed_encrypt("Hello World")
+"QEVuQwIAPiplaSyln4bywEKXYKDOqQ=="
+~~~
+
+## Author
+
+[Reid Morrison](https://github.com/reidmorrison)
+
+[Contributors](https://github.com/reidmorrison/symmetric_encryption/graphs/contributors)
+
+## Versioning
+
+This project uses [Semantic Versioning](http://semver.org/).
