@@ -1,5 +1,5 @@
 defmodule SymmetricEncryption.Decryptor do
-  alias SymmetricEncryption.{Config, Header}
+  alias SymmetricEncryption.{Config, Header, Cipher}
 
   def parse_header(encoded) do
     decode(encoded)
@@ -9,14 +9,8 @@ defmodule SymmetricEncryption.Decryptor do
   def decrypt(encoded) when is_binary(encoded) do
     {encrypted, header} = parse_header(encoded)
 
-    key = Config.key(header.version)
-    encrypted
-    |> decrypt(
-         Header.key(header) || key.key(),
-         header.iv() || key.iv(),
-         key.cipher(),
-         header.auth_tag()
-       )
+    build_cipher(header)
+    |> Cipher.decrypt(encrypted)
     |> uncompress(header.compress)
   end
 
@@ -27,11 +21,22 @@ defmodule SymmetricEncryption.Decryptor do
     end
   end
 
-  # Private internal use only method.
-  def decrypt(encrypted, aes_key, iv, cipher, auth_tag) when is_binary(encrypted) do
-    encrypted
-    |> block_decrypt(aes_key, iv, cipher, auth_tag)
-    |> strip_padding()
+  # Returns the Cipher that can be used to decrypt the data following this header.
+  defp build_cipher(header) do
+    Config.cipher(header.version)
+    |> cipher_random_key(header.encrypted_key)
+    |> cipher_random_iv(header.iv)
+  end
+
+  defp cipher_random_key(cipher, nil), do: cipher
+  defp cipher_random_key(cipher, encrypted_key) do
+    key = Cipher.decrypt(cipher, encrypted_key)
+    Map.put(cipher, :key, key)
+  end
+
+  defp cipher_random_iv(cipher, nil), do: cipher
+  defp cipher_random_iv(cipher, iv) do
+    Map.put(cipher, :iv, iv)
   end
 
   defp uncompress(data, false), do: data
@@ -39,27 +44,10 @@ defmodule SymmetricEncryption.Decryptor do
     :zlib.uncompress(compressed)
   end
 
-  defp strip_padding(str) do
-    len = byte_size(str)
-    all_but_last = len - 1
-    << _ :: binary-size(all_but_last), last :: 8 >> = str
-    length = len - last
-    << string :: binary-size(length), _ :: binary>> = str
-    string
-  end
-
   defp decode(data) do
     case Base.decode64(data) do
       :error -> raise(ArgumentError, message: "Cannot parse invalid Base64 encoded encrypted string")
       {:ok, decoded} -> decoded
     end
-  end
-
-  defp block_decrypt(encrypted, aes_key, iv, :aes_cbc256, _auth_tag) do
-    :crypto.block_decrypt(:aes_cbc256, aes_key, iv, encrypted)
-  end
-
-  defp block_decrypt(encrypted, aes_key, iv, :aes_gcm256, auth_tag) do
-    :crypto.block_decrypt(:aes_gcm, aes_key, iv, {"aes256gcm", encrypted, auth_tag})
   end
 end

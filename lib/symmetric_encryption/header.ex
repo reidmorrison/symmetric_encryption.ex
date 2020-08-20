@@ -15,14 +15,12 @@
 #    2 Bytes: IV Length (little endian), if included.
 #      IV in binary form.
 #    2 Bytes: Key Length (little endian), if included.
-#      Key in binary form
+#      Encrypted Key in binary form
 #    2 Bytes: Cipher Name Length (little endian), if included.
 #      Cipher name is UTF8 text
 #    2 Bytes: Auth Tag Length (little endian), if included.
 #      Auth Tag is binary data
 defmodule SymmetricEncryption.Header do
-  alias SymmetricEncryption.{Config,Header}
-
   defstruct(
     version: 1,
     compress: false,
@@ -34,7 +32,7 @@ defmodule SymmetricEncryption.Header do
 
   @openssl_cipher_name_map %{"aes256cbc" => :aes_cbc256}
 
-  def compressed?(header = %Header{}), do: header.compress == true
+  def compressed?(header = %SymmetricEncryption.Header{}), do: header.compress == true
 
   def header?(buffer) when is_binary(buffer), do: String.starts_with?(buffer, "@EnC")
 
@@ -61,7 +59,7 @@ defmodule SymmetricEncryption.Header do
 
     {
       remainder,
-      %Header{
+      %SymmetricEncryption.Header{
         version: version,
         compress: compress == 1,
         iv: iv,
@@ -81,29 +79,10 @@ defmodule SymmetricEncryption.Header do
     |> serialize_string(header.auth_tag)
   end
 
-  def key(%Header{encrypted_key: encrypted_key}) when is_nil(encrypted_key), do: nil
-  def key(header) do
-    key = Config.key(header.version)
-    header.encrypted_key
-    |> SymmetricEncryption.Decryptor.decrypt(key.key(), key.iv(), key.cipher(), nil)
-  end
-
-  def encrypt_key(header, key) do
-    encryption_key = Config.key(header.version)
-
-    encrypted_key = SymmetricEncryption.Encryptor.binary_encrypt(
-      key,
-      encryption_key.key(),
-      encryption_key.iv(),
-      encryption_key.cipher()
-    )
-    Map.put(header, :encrypted_key, encrypted_key)
-  end
-
   defp deserialize_string(buffer, 0), do: {buffer, nil}
   defp deserialize_string(buffer, 1) do
     <<length :: little - 16, remainder :: binary>> = buffer
-    <<string :: binary-size(length), remainder :: binary>> = remainder
+    <<string :: binary - size(length), remainder :: binary>> = remainder
     {remainder, string}
   end
 

@@ -2,7 +2,7 @@ defmodule SymmetricEncryption do
   @moduledoc """
   Symmetric Encryption.
 
-  Supports AES symmetric encryption using the CBC or GCM block ciphers.
+  Supports AES symmetric encryption using the CBC block cipher.
   """
 
   @doc """
@@ -27,13 +27,13 @@ defmodule SymmetricEncryption do
 
   ## Examples
 
-      iex> SymmetricEncryption.insecure_encrypt("Hello World")
+      iex> SymmetricEncryption.fixed_encrypt("Hello World")
       "QEVuQwIAPiplaSyln4bywEKXYKDOqQ=="
-      iex> SymmetricEncryption.insecure_encrypt("Hello World")
+      iex> SymmetricEncryption.fixed_encrypt("Hello World")
       "QEVuQwIAPiplaSyln4bywEKXYKDOqQ=="
 
   """
-  defdelegate insecure_encrypt(data), to: SymmetricEncryption.Encryptor
+  defdelegate fixed_encrypt(data), to: SymmetricEncryption.Encryptor
 
   @doc """
   Decrypt String data.

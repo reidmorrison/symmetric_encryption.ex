@@ -1,31 +1,29 @@
 defmodule SymmetricEncryption.Config do
-  alias SymmetricEncryption.Key
+  alias SymmetricEncryption.Cipher
 
-  # Current active global key
-  def key() do
-    List.first(keys())
+  # Current active global cipher
+  def cipher() do
+    ciphers()
+    |> List.first()
   end
 
-  # Request a specific version of a key
-  def key(version) do
-    Enum.find(keys(), fn key -> key.version == version end) ||
-      raise(ArgumentError, message: "Key version #{version} is not available on this system.")
-    #    key = Enum.find(keys(), fn key -> key.version == version end)
-    #    if is_nil(key), do: raise(ArgumentError, message: "Key version #{version} is not available on this system.")
-    #    key
+  def cipher(nil), do: cipher()
+
+  # Request a specific version of a cipher
+  def cipher(version) do
+    Enum.find(ciphers(), fn cipher -> cipher.version == version end) ||
+      raise(ArgumentError, message: "Cipher version #{version} is not available on this system.")
   end
 
-  # Hardcoded Placeholder for global key
-  def keys() do
+  # Hardcoded Placeholder for global cipher
+  def ciphers() do
     [
-      %Key{
-        cipher: :aes_cbc256,
+      %Cipher{
         key: "ABCDEF1234567890ABCDEF1234567890",
         iv: "ABCDEF1234567890",
         version: 2
       },
-      %Key{
-        cipher: :aes_cbc256,
+      %Cipher{
         key: "1234567890ABCDEF1234567890ABCDEF",
         iv: "1234567890ABCDEF",
         version: 1

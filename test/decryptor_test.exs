@@ -10,13 +10,13 @@ defmodule DecryptorTest do
     assert decrypted == "Hello World"
   end
 
-  test "decrypts with insecure iv" do
-    encrypted = SymmetricEncryption.Encryptor.insecure_encrypt("Hello World")
+  test "decrypts with static iv and not compressed" do
+    encrypted = SymmetricEncryption.Encryptor.fixed_encrypt("Hello World")
     decrypted = SymmetricEncryption.Decryptor.decrypt(encrypted)
     assert decrypted == "Hello World"
   end
 
-  test "decrypts old data" do
+  test "decrypts with previous cipher" do
     encrypted = SymmetricEncryption.Encryptor.encrypt("Hello World", version: 1)
     decrypted = SymmetricEncryption.Decryptor.decrypt(encrypted)
     assert decrypted == "Hello World"
