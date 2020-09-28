@@ -1,4 +1,7 @@
 defmodule SymmetricEncryption do
+
+  alias SymmetricEncryption.Cipher
+
   @moduledoc """
   Symmetric Encryption.
 
@@ -82,5 +85,46 @@ defmodule SymmetricEncryption do
   def header(encrypted) do
     {_, header} = SymmetricEncryption.Decryptor.parse_header(encrypted)
     header
+  end
+
+  @doc """
+  Adds a Cipher struct into memory
+
+  ## Examples
+
+  iex> SymmetricEncryption.set_cipher(%Cipher{iv: "fake_iv", key: "fake_key" , version: 1})
+
+  %SymmetricEncryption.Cipher{
+    iv: "fake_iv",
+    key: "fake_key",
+    version: 1
+  }
+  """
+  def set_cipher(cipher = %Cipher{} ) do
+    GenServer.call(SymmetricEncryption.Cache.Server, {:set_cipher, cipher})
+  end
+
+  @doc """
+  Fetches a List of ciphers from memory
+
+  ## Examples
+
+  iex> SymmetricEncryption.get_ciphers()
+
+  [
+  %SymmetricEncryption.Cipher{
+    iv: "ABCDEF1234567890",
+    key: "ABCDEF1234567890ABCDEF1234567890",
+    version: 1
+  },
+  %SymmetricEncryption.Cipher{
+    iv: "ABCDEF1234567891",
+    key: "ABCDEF1234567890ABCDEF1234567891",
+    version: 2
+  }
+  ]
+  """
+  def get_ciphers() do
+    GenServer.call(SymmetricEncryption.Cache.Server, {:get_ciphers})
   end
 end

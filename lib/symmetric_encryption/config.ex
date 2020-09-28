@@ -15,19 +15,8 @@ defmodule SymmetricEncryption.Config do
       raise(ArgumentError, message: "Cipher version #{version} is not available on this system.")
   end
 
-  # Hardcoded Placeholder for global cipher
+  # Gets a List of ciphers from memory
   def ciphers() do
-    [
-      %Cipher{
-        key: "ABCDEF1234567890ABCDEF1234567890",
-        iv: "ABCDEF1234567890",
-        version: 2
-      },
-      %Cipher{
-        key: "1234567890ABCDEF1234567890ABCDEF",
-        iv: "1234567890ABCDEF",
-        version: 1
-      },
-    ]
+   SymmetricEncryption.get_ciphers()
   end
 end
