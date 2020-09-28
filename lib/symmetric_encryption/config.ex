@@ -19,4 +19,8 @@ defmodule SymmetricEncryption.Config do
   def ciphers() do
     GenServer.call(SymmetricEncryption.Cache.Server, {:ciphers})
   end
+
+  def add_cipher(c = %Cipher{} ) do
+    GenServer.call(SymmetricEncryption.Cache.Server, {:add_cipher, c})
+  end
 end
