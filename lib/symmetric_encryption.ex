@@ -92,7 +92,7 @@ defmodule SymmetricEncryption do
 
   ## Examples
 
-  iex> SymmetricEncryption.set_cipher(%Cipher{iv: "fake_iv", key: "fake_key" , version: 1})
+  iex> SymmetricEncryption.add_cipher(%Cipher{iv: "fake_iv", key: "fake_key" , version: 1})
 
   %SymmetricEncryption.Cipher{
     iv: "fake_iv",
