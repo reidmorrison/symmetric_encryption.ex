@@ -15,19 +15,12 @@ defmodule SymmetricEncryption.Config do
       raise(ArgumentError, message: "Cipher version #{version} is not available on this system.")
   end
 
-  # Hardcoded Placeholder for global cipher
+  # Returns a List of ciphers from memory
   def ciphers() do
-    [
-      %Cipher{
-        key: "ABCDEF1234567890ABCDEF1234567890",
-        iv: "ABCDEF1234567890",
-        version: 2
-      },
-      %Cipher{
-        key: "1234567890ABCDEF1234567890ABCDEF",
-        iv: "1234567890ABCDEF",
-        version: 1
-      },
-    ]
+    GenServer.call(SymmetricEncryption.Cache.Server, {:ciphers})
+  end
+
+  def add_cipher(c = %Cipher{} ) do
+    GenServer.call(SymmetricEncryption.Cache.Server, {:add_cipher, c})
   end
 end

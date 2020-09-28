@@ -1,4 +1,7 @@
 defmodule SymmetricEncryption do
+
+  alias SymmetricEncryption.Cipher
+
   @moduledoc """
   Symmetric Encryption.
 
@@ -83,4 +86,19 @@ defmodule SymmetricEncryption do
     {_, header} = SymmetricEncryption.Decryptor.parse_header(encrypted)
     header
   end
+
+  @doc """
+  Adds a Cipher struct into memory
+
+  ## Examples
+
+  iex> SymmetricEncryption.add_cipher(%Cipher{iv: "fake_iv", key: "fake_key" , version: 1})
+
+  %SymmetricEncryption.Cipher{
+    iv: "fake_iv",
+    key: "fake_key",
+    version: 1
+  }
+  """
+  defdelegate add_cipher(cipher), to: SymmetricEncryption.Config
 end
