@@ -10,7 +10,7 @@ Enum.each(
       iv: "ABCDEF1234567890",
       version: version
     }
-    SymmetricEncryption.set_cipher(cipher)
+    SymmetricEncryption.add_cipher(cipher)
   end
 )
 

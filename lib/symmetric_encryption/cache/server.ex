@@ -12,11 +12,11 @@ defmodule SymmetricEncryption.Cache.Server do
     {:ok, opts}
   end
 
-  def handle_call({:set_cipher, m = %Cipher{}}, _from, state) do
+  def handle_call({:add_cipher, m = %Cipher{}}, _from, state) do
     {:reply, m, state ++ [m]}
   end
 
-  def handle_call({:get_ciphers}, _from, state) do
+  def handle_call({:ciphers}, _from, state) do
     {:reply, state, state}
   end
 

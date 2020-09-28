@@ -100,31 +100,7 @@ defmodule SymmetricEncryption do
     version: 1
   }
   """
-  def set_cipher(cipher = %Cipher{} ) do
-    GenServer.call(SymmetricEncryption.Cache.Server, {:set_cipher, cipher})
-  end
-
-  @doc """
-  Fetches a List of ciphers from memory
-
-  ## Examples
-
-  iex> SymmetricEncryption.get_ciphers()
-
-  [
-  %SymmetricEncryption.Cipher{
-    iv: "ABCDEF1234567890",
-    key: "ABCDEF1234567890ABCDEF1234567890",
-    version: 1
-  },
-  %SymmetricEncryption.Cipher{
-    iv: "ABCDEF1234567891",
-    key: "ABCDEF1234567890ABCDEF1234567891",
-    version: 2
-  }
-  ]
-  """
-  def get_ciphers() do
-    GenServer.call(SymmetricEncryption.Cache.Server, {:get_ciphers})
+  def add_cipher(cipher = %Cipher{} ) do
+    GenServer.call(SymmetricEncryption.Cache.Server, {:add_cipher, cipher})
   end
 end

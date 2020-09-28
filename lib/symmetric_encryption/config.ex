@@ -15,8 +15,8 @@ defmodule SymmetricEncryption.Config do
       raise(ArgumentError, message: "Cipher version #{version} is not available on this system.")
   end
 
-  # Gets a List of ciphers from memory
+  # Returns a List of ciphers from memory
   def ciphers() do
-   SymmetricEncryption.get_ciphers()
+    GenServer.call(SymmetricEncryption.Cache.Server, {:ciphers})
   end
 end
