@@ -1,7 +1,5 @@
 defmodule SymmetricEncryption do
 
-  alias SymmetricEncryption.Cipher
-
   @moduledoc """
   Symmetric Encryption.
 

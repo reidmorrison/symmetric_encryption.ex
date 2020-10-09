@@ -59,7 +59,7 @@ defmodule SymmetricEncryption.Cipher do
     raise(ArgumentError, message: "Please set the key prior to calling methods on SymmetricEncryption.cipher")
   end
   defp key_strength(key) do
-    String.length(key) * 8
+    byte_size(key) * 8
   end
 
   defp cipher_name(cipher) do
