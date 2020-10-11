@@ -147,7 +147,7 @@ iex> SymmetricEncryption.fixed_encrypt("Hello World")
 "QEVuQwIAPiplaSyln4bywEKXYKDOqQ=="
 ~~~
 
-## Use with Ecto
+## Use with Ecto (Requires 3.5)
 
 If your project uses ecto and you want to encrypt fields within your schema, you can do so as follows.
 ~~~elixir

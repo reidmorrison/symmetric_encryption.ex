@@ -1,4 +1,4 @@
-if Code.ensure_loaded?(Ecto) do
+if Code.ensure_loaded?(Ecto.ParameterizedType) do
   defmodule SymmetricEncryption.EctoType do
     @moduledoc """
     Perform encryption for an Ecto schema field.
