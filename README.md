@@ -147,6 +147,16 @@ iex> SymmetricEncryption.fixed_encrypt("Hello World")
 "QEVuQwIAPiplaSyln4bywEKXYKDOqQ=="
 ~~~
 
+## Use with Ecto
+
+If your project uses ecto and you want to encrypt fields within your schema, you can do so as follows.
+~~~elixir
+schema "foobars" do
+  field(:random, SymmetricEncryption.EctoType, random_iv: true)
+  field(:fixed, SymmetricEncryption.EctoType, random_iv: false)
+end
+~~~
+
 ## Author
 
 [Reid Morrison](https://github.com/reidmorrison)

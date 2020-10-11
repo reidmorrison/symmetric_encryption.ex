@@ -1,18 +1,7 @@
 defmodule EctoTypeTest do
   use ExUnit.Case, async: true
-  @moduletag timeout: :infinity
 
   alias SymmetricEncryption.EctoType
-
-  defmodule Schema do
-    use Ecto.Schema
-
-    @primary_key {:id, :binary_id, autogenerate: true}
-    schema "" do
-      field(:random, EctoType, random_iv: true)
-      field(:fixed, EctoType, random_iv: false)
-    end
-  end
 
   test "custom types" do
     value = "My database value"
