@@ -90,6 +90,47 @@ Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_do
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
 be found at [https://hexdocs.pm/symmetric_encryption](https://hexdocs.pm/symmetric_encryption).
 
+## Configuration
+
+You can add something like the following to your config files to initialize your ciphers.
+
+~~~elixir
+  config :symmetric_encryption, ciphers: [
+    %{
+      key: "ABCDEF1234567890ABCDEF1234567890",
+      iv: "ABCDEF1234567890",
+      version: 1
+    }
+  ]
+~~~
+
+If you need to periodically rotate your encryption keys, than multiple ciphers can be added.  New keys
+should be added to the front of the list as that is the default used for encryption.  After adding, you 
+can reencrypt old data with the new key and when complete you can delete the old key.
+
+~~~elixir
+  config :symmetric_encryption, ciphers: [
+    %{
+      key: "ABCDEF1234567890ABCDEF1234567892",
+      iv: "ABCDEF1234567890",
+      version: 2
+    },
+    %{
+      key: "ABCDEF1234567890ABCDEF1234567890",
+      iv: "ABCDEF1234567890",
+      version: 1
+    }
+  ]
+~~~
+
+If you are obtaining your ciphers from a confidential resource that may be only available at runtime,
+you can specify a function for the ciphers key.
+
+~~~elixir
+  config :symmetric_encryption, ciphers: &MyApp.init_ciphers/0
+~~~
+
+
 ## Usage
 
 Encrypt String data.

@@ -12,6 +12,14 @@ defmodule SymmetricEncryption.Cipher do
     version: 1
   )
 
+  def new(cipher = %SymmetricEncryption.Cipher{}) do
+    cipher
+  end
+
+  def new(%{key: key, iv: iv, version: version}) do
+    %SymmetricEncryption.Cipher{key: key, iv: iv, version: version}
+  end
+
   # Returns a new cipher with randomized symmetric key and initialization vector.
   #
   # The initialization vector is used when SymmetricEncryption.fixed_encrypt is called.
@@ -20,7 +28,9 @@ defmodule SymmetricEncryption.Cipher do
     |> random_key()
     |> random_iv()
   end
+
   def randomize(cipher = %SymmetricEncryption.Cipher{}, 256), do: randomize(cipher)
+
   def randomize(cipher = %SymmetricEncryption.Cipher{}, 128) do
     cipher
     |> random_key(128)
@@ -31,7 +41,9 @@ defmodule SymmetricEncryption.Cipher do
   def random_key(cipher \\ %SymmetricEncryption.Cipher{}) do
     Map.put(cipher, :key, :crypto.strong_rand_bytes(32))
   end
+
   def random_key(cipher = %SymmetricEncryption.Cipher{}, 256), do: random_key(cipher)
+
   def random_key(cipher = %SymmetricEncryption.Cipher{}, 128) do
     Map.put(cipher, :key, :crypto.strong_rand_bytes(16))
   end
@@ -56,23 +68,26 @@ defmodule SymmetricEncryption.Cipher do
 
   # Encryption key strength.
   defp key_strength(nil) do
-    raise(ArgumentError, message: "Please set the key prior to calling methods on SymmetricEncryption.cipher")
+    raise(ArgumentError,
+      message: "Please set the key prior to calling methods on SymmetricEncryption.cipher"
+    )
   end
+
   defp key_strength(key) do
     byte_size(key) * 8
   end
 
   defp cipher_name(cipher) do
-    "aes_cbc" <> to_string(key_strength(cipher.key))
+    ("aes_cbc" <> to_string(key_strength(cipher.key)))
     |> String.to_atom()
   end
 
   defp strip_padding(str) do
     len = byte_size(str)
     all_but_last = len - 1
-    <<_ :: binary - size(all_but_last), last :: 8>> = str
+    <<_::binary-size(all_but_last), last::8>> = str
     length = len - last
-    <<string :: binary - size(length), _ :: binary>> = str
+    <<string::binary-size(length), _::binary>> = str
     string
   end
 
@@ -80,9 +95,12 @@ defmodule SymmetricEncryption.Cipher do
     block_size = 16
     len = byte_size(str)
     pad_len = block_size - rem(len, block_size)
-    padding = <<pad_len>>
-              |> List.duplicate(pad_len)
-              |> Enum.join("")
+
+    padding =
+      <<pad_len>>
+      |> List.duplicate(pad_len)
+      |> Enum.join("")
+
     str <> padding
   end
 end
