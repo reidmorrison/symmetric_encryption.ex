@@ -1,6 +1,4 @@
 defmodule SymmetricEncryption.Config do
-  alias SymmetricEncryption.Cipher
-
   # Current active global cipher
   def cipher() do
     ciphers()
@@ -17,10 +15,10 @@ defmodule SymmetricEncryption.Config do
 
   # Returns a List of ciphers from memory
   def ciphers() do
-    GenServer.call(SymmetricEncryption.Cache.Server, {:ciphers})
+    SymmetricEncryption.Cache.Server.ciphers()
   end
 
-  def add_cipher(c = %Cipher{} ) do
-    GenServer.call(SymmetricEncryption.Cache.Server, {:add_cipher, c})
+  def add_cipher(c) do
+    SymmetricEncryption.Cache.Server.add_cipher(c)
   end
 end
