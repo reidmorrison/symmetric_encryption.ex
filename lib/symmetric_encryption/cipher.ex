@@ -57,12 +57,12 @@ defmodule SymmetricEncryption.Cipher do
     data = append_padding(data)
 
     cipher_name(cipher)
-    |> :crypto.block_encrypt(cipher.key, cipher.iv, data)
+    |> :crypto.crypto_one_time(cipher.key, cipher.iv, data, true)
   end
 
   def decrypt(cipher, encrypted) do
     cipher_name(cipher)
-    |> :crypto.block_decrypt(cipher.key, cipher.iv, encrypted)
+    |> :crypto.crypto_one_time(cipher.key, cipher.iv, encrypted, false)
     |> strip_padding()
   end
 
@@ -78,7 +78,8 @@ defmodule SymmetricEncryption.Cipher do
   end
 
   defp cipher_name(cipher) do
-    ("aes_cbc" <> to_string(key_strength(cipher.key)))
+    ["aes", to_string(key_strength(cipher.key)), "cbc"]
+    |> Enum.join("_")
     |> String.to_atom()
   end
 
