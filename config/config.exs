@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 # Test keys
 config :symmetric_encryption,
